@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Website</title>
+    <title>Pixel Verse SMP</title>
 
     <style>
         body {
@@ -13,12 +13,35 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .server-button {
+            padding: 18px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            background: rgba(0, 0, 0, 0.75);
+            border: 2px solid white;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .server-button:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 
 <body>
-    <h1>Hello!</h1>
-    <p>This is my website.</p>
+
+    <a class="server-button" href="minecraft://?addExternalServer=Pixel%20Verse%7C81.12.50.28:19132">
+        ورود به سرور
+    </a>
+
 </body>
 </html>
