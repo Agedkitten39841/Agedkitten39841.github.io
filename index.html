@@ -9,6 +9,7 @@
         body {
             margin: 0;
             min-height: 100vh;
+
             background-image: url("file_00000000e3d482108be29f77ad483d21.png");
             background-size: cover;
             background-position: center;
@@ -17,6 +18,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
             font-family: Arial, sans-serif;
         }
 
@@ -31,9 +33,11 @@
         .menu-button {
             width: 50px;
             height: 45px;
+
             background: rgba(0, 0, 0, 0.85);
             border: 2px solid white;
             border-radius: 10px;
+
             color: white;
             font-size: 27px;
             cursor: pointer;
@@ -41,22 +45,29 @@
 
         .menu-content {
             display: none;
+
             position: absolute;
             right: 0;
             top: 55px;
+
             width: 170px;
+
             background: rgba(0, 0, 0, 0.95);
             border: 1px solid white;
             border-radius: 10px;
+
             overflow: hidden;
         }
 
         .menu-content a {
             display: block;
+
             padding: 15px;
+
             color: white;
             text-decoration: none;
             text-align: center;
+
             font-size: 17px;
         }
 
@@ -74,22 +85,32 @@
 
         .server-button {
             padding: 18px 40px;
+
             font-size: 22px;
             font-weight: bold;
+
             color: white;
+
             background: rgba(0, 0, 0, 0.8);
+
             border: 2px solid white;
             border-radius: 12px;
+
             cursor: pointer;
         }
 
         .server-info {
             display: none;
+
             margin-top: 20px;
             padding: 20px;
+
             color: white;
+
             background: rgba(0, 0, 0, 0.85);
+
             border-radius: 12px;
+
             font-size: 20px;
         }
 
@@ -113,13 +134,29 @@
 
 <!-- منوی سه خط -->
 <div class="menu">
-    <button class="menu-button">☰</button>
+
+    <button class="menu-button">
+        ☰
+    </button>
 
     <div class="menu-content">
-        <a href="index.html">صفحه اصلی</a>
-        <a href="products.html">محصولات</a>
+
+        <a href="index.html">
+            🏠 صفحه اصلی
+        </a>
+
+        <a href="products.html">
+            🛒 محصولات
+        </a>
+
+        <a href="chat.html">
+            💬 چت
+        </a>
+
     </div>
+
 </div>
+
 
 <div class="container">
 
@@ -128,64 +165,17 @@
     </button>
 
     <div class="server-info" id="serverInfo">
-        <div>IP: 81.12.50.28</div>
-        <div>Port: 19132</div>
 
-        <div id="status">در حال بررسی...</div>
+        <div>
+            IP: 81.12.50.28
+        </div>
+
+        <div>
+            Port: 19132
+        </div>
+
+        <div id="status">
+            در حال بررسی...
+        </div>
+
         <div id="players"></div>
-    </div>
-
-</div>
-
-<script>
-
-function showServer() {
-    document.getElementById("serverInfo").style.display = "block";
-    checkServer();
-}
-
-async function checkServer() {
-
-    const status = document.getElementById("status");
-    const players = document.getElementById("players");
-
-    try {
-
-        const response = await fetch(
-            "https://api.mcsrvstat.us/bedrock/3/81.12.50.28:19132"
-        );
-
-        const data = await response.json();
-
-        if (data.online) {
-
-            status.innerHTML = "🟢 سرور آنلاین";
-            status.className = "online";
-
-            players.innerHTML =
-                "👥 پلیر آنلاین: " +
-                data.players.online +
-                " / " +
-                data.players.max;
-
-        } else {
-
-            status.innerHTML = "🔴 سرور آفلاین";
-            status.className = "offline";
-
-            players.innerHTML = "👥 پلیر آنلاین: 0";
-        }
-
-    } catch (error) {
-
-        status.innerHTML = "⚠️ خطا در بررسی سرور";
-        status.className = "offline";
-
-        players.innerHTML = "";
-    }
-}
-
-</script>
-
-</body>
-</html>
