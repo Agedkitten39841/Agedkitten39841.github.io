@@ -22,7 +22,6 @@
             font-family: Arial, sans-serif;
         }
 
-        /* منوی سه خط */
         .menu {
             position: fixed;
             top: 20px;
@@ -61,7 +60,6 @@
 
         .menu-content a {
             display: block;
-
             padding: 15px;
 
             color: white;
@@ -99,6 +97,10 @@
             cursor: pointer;
         }
 
+        .server-button:hover {
+            background: rgba(40, 40, 40, 0.95);
+        }
+
         .server-info {
             display: none;
 
@@ -132,7 +134,6 @@
 
 <body>
 
-<!-- منوی سه خط -->
 <div class="menu">
 
     <button class="menu-button">
@@ -157,10 +158,9 @@
 
 </div>
 
-
 <div class="container">
 
-    <button class="server-button" onclick="showServer()">
+    <button class="server-button" onclick="joinServer()">
         ورود به سرور
     </button>
 
@@ -179,3 +179,24 @@
         </div>
 
         <div id="players"></div>
+
+    </div>
+
+</div>
+
+<script>
+
+function joinServer() {
+
+    // نمایش اطلاعات سرور
+    document.getElementById("serverInfo").style.display = "block";
+
+    // تلاش برای باز کردن Minecraft Bedrock
+    window.location.href =
+        "minecraft://?addExternalServer=Pixel%20Verse%20SMP|81.12.50.28:19132";
+}
+
+</script>
+
+</body>
+</html>
