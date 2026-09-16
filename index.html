@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Verse SMP</title>
 
     <style>
@@ -17,6 +18,54 @@
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
+        }
+
+        /* منوی سه خط */
+        .menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .menu-button {
+            width: 50px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid white;
+            border-radius: 10px;
+            color: white;
+            font-size: 27px;
+            cursor: pointer;
+        }
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 55px;
+            width: 170px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .menu-content a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .menu-content a:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu:hover .menu-content {
+            display: block;
         }
 
         .container {
@@ -61,6 +110,16 @@
 </head>
 
 <body>
+
+<!-- منوی سه خط -->
+<div class="menu">
+    <button class="menu-button">☰</button>
+
+    <div class="menu-content">
+        <a href="index.html">صفحه اصلی</a>
+        <a href="products.html">محصولات</a>
+    </div>
+</div>
 
 <div class="container">
 
