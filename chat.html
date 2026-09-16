@@ -85,6 +85,8 @@
             margin-bottom: 10px;
 
             border-radius: 10px;
+
+            word-break: break-word;
         }
 
         .input-box {
@@ -125,6 +127,10 @@
             cursor: pointer;
         }
 
+        #sendButton:disabled {
+            opacity: 0.5;
+        }
+
     </style>
 </head>
 
@@ -134,18 +140,13 @@
     ← برگشت
 </a>
 
-
 <div class="chat">
 
     <div class="header">
         💬 Pixel Verse Chat
     </div>
 
-
-    <div id="messages">
-
-    </div>
-
+    <div id="messages"></div>
 
     <div class="input-box">
 
@@ -153,6 +154,7 @@
             id="messageInput"
             type="text"
             placeholder="پیامت را بنویس..."
+            maxlength="500"
         >
 
         <button id="sendButton">
@@ -163,8 +165,13 @@
 
 </div>
 
-
 <script>
+
+const SUPABASE_URL =
+"https://ziigiepvuqjethzanjka.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_To2GG-pd";
 
 const input =
 document.getElementById("messageInput");
@@ -176,55 +183,157 @@ const messages =
 document.getElementById("messages");
 
 
-button.addEventListener("click", sendMessage);
+async function loadMessages() {
 
+    try {
 
-input.addEventListener("keydown", function(event) {
+        const response = await fetch(
+            SUPABASE_URL +
+            "/rest/v1/messages?select=*&order=created_at.asc",
+            {
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY
+                }
+            }
+        );
 
-    if (event.key === "Enter") {
+        if (!response.ok) {
+            throw new Error("خطا در دریافت پیام‌ها");
+        }
 
-        sendMessage();
+        const data =
+        await response.json();
+
+        messages.innerHTML = "";
+
+        data.forEach(function(item) {
+
+            addMessage(item.message);
+
+        });
+
+        messages.scrollTop =
+        messages.scrollHeight;
+
+    } catch (error) {
+
+        console.log(error);
 
     }
 
-});
+}
 
 
-function sendMessage() {
-
-    const text =
-    input.value.trim();
-
-
-    if (text === "") {
-
-        return;
-
-    }
-
+function addMessage(text) {
 
     const message =
     document.createElement("div");
 
-
     message.className =
     "message";
-
 
     message.textContent =
     text;
 
-
     messages.appendChild(message);
 
+}
 
-    input.value = "";
 
+async function sendMessage() {
 
-    messages.scrollTop =
-    messages.scrollHeight;
+    const text =
+    input.value.trim();
+
+    if (text === "") {
+        return;
+    }
+
+    button.disabled = true;
+
+    try {
+
+        const response = await fetch(
+            SUPABASE_URL + "/rest/v1/messages",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY,
+                    "Prefer": "return=minimal"
+                },
+
+                body: JSON.stringify({
+                    message: text
+                })
+            }
+        );
+
+        if (!response.ok) {
+
+            const errorText =
+            await response.text();
+
+            console.log(errorText);
+
+            alert("پیام ارسال نشد");
+
+            return;
+        }
+
+        input.value = "";
+
+        await loadMessages();
+
+    } catch (error) {
+
+        console.log(error);
+
+        alert("خطا در اتصال به سرور");
+
+    } finally {
+
+        button.disabled = false;
+
+        input.focus();
+
+    }
 
 }
+
+
+button.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* بارگذاری پیام‌ها هنگام ورود */
+loadMessages();
+
+
+/* بررسی پیام‌های جدید هر 2 ثانیه */
+setInterval(
+    loadMessages,
+    2000
+);
 
 </script>
 
