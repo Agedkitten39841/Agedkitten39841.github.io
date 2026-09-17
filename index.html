@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Verse SMP</title>
+    <title>Pixel Verse</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
 
-            background-image: url("file_00000000e3d482108be29f77ad483d21.png");
+            background-image: url("file_000000008e7481f4b58fb06dc63ac6ae.png");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
 
             font-family: Arial, sans-serif;
         }
@@ -49,13 +49,17 @@
             right: 0;
             top: 55px;
 
-            width: 170px;
+            width: 180px;
 
             background: rgba(0, 0, 0, 0.95);
             border: 1px solid white;
             border-radius: 10px;
 
             overflow: hidden;
+        }
+
+        .menu:hover .menu-content {
+            display: block;
         }
 
         .menu-content a {
@@ -73,61 +77,35 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        .menu:hover .menu-content {
-            display: block;
-        }
+        .center {
+            min-height: 100vh;
 
-        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
             text-align: center;
         }
 
-        .server-button {
-            padding: 18px 40px;
-
-            font-size: 22px;
-            font-weight: bold;
+        .welcome {
+            padding: 25px;
 
             color: white;
 
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 18px;
 
-            border: 2px solid white;
-            border-radius: 12px;
-
-            cursor: pointer;
+            backdrop-filter: blur(4px);
         }
 
-        .server-button:hover {
-            background: rgba(40, 40, 40, 0.95);
+        .welcome h1 {
+            margin: 0 0 10px;
+            font-size: 35px;
         }
 
-        .server-info {
-            display: none;
-
-            margin-top: 20px;
-            padding: 20px;
-
-            color: white;
-
-            background: rgba(0, 0, 0, 0.85);
-
-            border-radius: 12px;
-
-            font-size: 20px;
-        }
-
-        .server-info div {
-            margin: 8px;
-        }
-
-        .online {
-            color: #00ff66;
-            font-weight: bold;
-        }
-
-        .offline {
-            color: #ff3333;
-            font-weight: bold;
+        .welcome p {
+            margin: 0;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -146,57 +124,31 @@
             🏠 صفحه اصلی
         </a>
 
-        <a href="products.html">
-            🛒 محصولات
-        </a>
-
         <a href="chat.html">
             💬 چت
         </a>
 
-    </div>
-
-</div>
-
-<div class="container">
-
-    <button class="server-button" onclick="joinServer()">
-        ورود به سرور
-    </button>
-
-    <div class="server-info" id="serverInfo">
-
-        <div>
-            IP: 81.12.50.28
-        </div>
-
-        <div>
-            Port: 19132
-        </div>
-
-        <div id="status">
-            در حال بررسی...
-        </div>
-
-        <div id="players"></div>
+        <a href="login.html">
+            👤 ورود / ثبت‌نام
+        </a>
 
     </div>
 
 </div>
 
-<script>
+<div class="center">
 
-function joinServer() {
+    <div class="welcome">
 
-    // نمایش اطلاعات سرور
-    document.getElementById("serverInfo").style.display = "block";
+        <h1>Pixel Verse</h1>
 
-    // تلاش برای باز کردن Minecraft Bedrock
-    window.location.href =
-        "minecraft://?addExternalServer=Pixel%20Verse%20SMP|81.12.50.28:19132";
-}
+        <p>
+            به پیام‌رسان Pixel Verse خوش آمدید
+        </p>
 
-</script>
+    </div>
+
+</div>
 
 </body>
 </html>
