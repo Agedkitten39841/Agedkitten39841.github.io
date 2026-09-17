@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Pixel Verse Chat</title>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -15,12 +13,9 @@
         body {
             margin: 0;
             min-height: 100vh;
-
             background: #111;
             color: white;
-
             font-family: Arial, sans-serif;
-
             display: flex;
             justify-content: center;
             align-items: center;
@@ -30,14 +25,10 @@
             position: fixed;
             top: 15px;
             left: 15px;
-
             padding: 10px 15px;
-
             background: #222;
             color: white;
-
             text-decoration: none;
-
             border: 1px solid white;
             border-radius: 8px;
         }
@@ -46,91 +37,66 @@
             width: 95%;
             max-width: 600px;
             height: 80vh;
-
             background: #181818;
-
             border: 2px solid #333;
             border-radius: 15px;
-
             display: flex;
             flex-direction: column;
-
             overflow: hidden;
         }
 
         .header {
             padding: 18px;
-
             text-align: center;
-
             background: #222;
-
             font-size: 22px;
             font-weight: bold;
         }
 
         #messages {
             flex: 1;
-
             padding: 15px;
-
             overflow-y: auto;
         }
 
         .message {
             background: #292929;
-
             padding: 10px;
-
             margin-bottom: 10px;
-
             border-radius: 10px;
-
             word-break: break-word;
         }
 
         .input-box {
             display: flex;
-
             gap: 8px;
-
             padding: 12px;
-
             background: #222;
         }
 
         #messageInput {
             flex: 1;
-
             padding: 13px;
-
             border: none;
             border-radius: 8px;
-
             background: #333;
             color: white;
-
             outline: none;
         }
 
         #sendButton {
             padding: 0 20px;
-
             border: none;
             border-radius: 8px;
-
             background: #4caf50;
             color: white;
-
             font-weight: bold;
-
             cursor: pointer;
         }
 
         #sendButton:disabled {
             opacity: 0.5;
         }
-
     </style>
 </head>
 
@@ -167,20 +133,13 @@
 
 <script>
 
-const SUPABASE_URL =
-"https://ziigiepvuqjethzanjka.supabase.co";
+const SUPABASE_URL = "https://ziigiepvuqjethzanjka.supabase.co";
 
-const SUPABASE_KEY =
-"sb_publishable_To2GG-pd";
+const SUPABASE_KEY = "sb_publishable_To2GG-pd";
 
-const input =
-document.getElementById("messageInput");
-
-const button =
-document.getElementById("sendButton");
-
-const messages =
-document.getElementById("messages");
+const input = document.getElementById("messageInput");
+const button = document.getElementById("sendButton");
+const messages = document.getElementById("messages");
 
 
 async function loadMessages() {
@@ -188,9 +147,9 @@ async function loadMessages() {
     try {
 
         const response = await fetch(
-            SUPABASE_URL +
-            "/rest/v1/messages?select=*&order=created_at.asc",
+            SUPABASE_URL + "/rest/v1/messages?select=id,message,created_at&order=created_at.asc",
             {
+                method: "GET",
                 headers: {
                     "apikey": SUPABASE_KEY,
                     "Authorization": "Bearer " + SUPABASE_KEY
@@ -199,143 +158,29 @@ async function loadMessages() {
         );
 
         if (!response.ok) {
-            throw new Error("خطا در دریافت پیام‌ها");
+            const errorText = await response.text();
+            console.log("Load error:", errorText);
+            return;
         }
 
-        const data =
-        await response.json();
+        const data = await response.json();
 
         messages.innerHTML = "";
 
         data.forEach(function(item) {
 
-            addMessage(item.message);
+            const message = document.createElement("div");
+
+            message.className = "message";
+
+            message.textContent = item.message;
+
+            messages.appendChild(message);
 
         });
 
-        messages.scrollTop =
-        messages.scrollHeight;
+        messages.scrollTop = messages.scrollHeight;
 
     } catch (error) {
 
-        console.log(error);
-
-    }
-
-}
-
-
-function addMessage(text) {
-
-    const message =
-    document.createElement("div");
-
-    message.className =
-    "message";
-
-    message.textContent =
-    text;
-
-    messages.appendChild(message);
-
-}
-
-
-async function sendMessage() {
-
-    const text =
-    input.value.trim();
-
-    if (text === "") {
-        return;
-    }
-
-    button.disabled = true;
-
-    try {
-
-        const response = await fetch(
-            SUPABASE_URL + "/rest/v1/messages",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": "Bearer " + SUPABASE_KEY,
-                    "Prefer": "return=minimal"
-                },
-
-                body: JSON.stringify({
-                    message: text
-                })
-            }
-        );
-
-        if (!response.ok) {
-
-            const errorText =
-            await response.text();
-
-            console.log(errorText);
-
-            alert("پیام ارسال نشد");
-
-            return;
-        }
-
-        input.value = "";
-
-        await loadMessages();
-
-    } catch (error) {
-
-        console.log(error);
-
-        alert("خطا در اتصال به سرور");
-
-    } finally {
-
-        button.disabled = false;
-
-        input.focus();
-
-    }
-
-}
-
-
-button.addEventListener(
-    "click",
-    sendMessage
-);
-
-
-input.addEventListener(
-    "keydown",
-    function(event) {
-
-        if (event.key === "Enter") {
-
-            sendMessage();
-
-        }
-
-    }
-);
-
-
-/* بارگذاری پیام‌ها هنگام ورود */
-loadMessages();
-
-
-/* بررسی پیام‌های جدید هر 2 ثانیه */
-setInterval(
-    loadMessages,
-    2000
-);
-
-</script>
-
-</body>
-</html>
+        console.log("Connection
