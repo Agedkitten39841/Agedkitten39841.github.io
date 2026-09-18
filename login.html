@@ -54,6 +54,7 @@
 
     #message {
         margin-top: 15px;
+        word-break: break-word;
     }
 
     a {
@@ -66,9 +67,17 @@
 
 </head><body><div class="box"><h1>Pixel Verse</h1>
 
-<input type="text" id="username" placeholder="نام کاربری">
+<input
+    type="text"
+    id="username"
+    placeholder="نام کاربری"
+>
 
-<input type="password" id="password" placeholder="رمز عبور">
+<input
+    type="password"
+    id="password"
+    placeholder="رمز عبور"
+>
 
 <button onclick="register()">ثبت‌نام</button>
 
@@ -84,7 +93,7 @@ const SUPABASE_URL =
 "https://ziigiepvuqjethzanjka.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_To2GG-pdTwB77Nife5b20Q_ncT8eAOb";
+"sb_publishable_To2GG-pdTwB77nIfe5b20Q_ncT8eAOb";
 
 
 async function register() {
@@ -112,7 +121,6 @@ async function register() {
 
     try {
 
-        // بررسی می‌کند این نام کاربری قبلاً وجود دارد یا نه
         const checkResponse = await fetch(
             SUPABASE_URL +
             "/rest/v1/profiles?username=eq." +
@@ -121,7 +129,8 @@ async function register() {
             {
                 method: "GET",
                 headers: {
-                    "apikey": SUPABASE_KEY
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY
                 }
             }
         );
@@ -129,13 +138,18 @@ async function register() {
         const existingUsers =
             await checkResponse.json();
 
+        if (!checkResponse.ok) {
+            message.innerText =
+                "خطا: " + JSON.stringify(existingUsers);
+            return;
+        }
+
         if (existingUsers.length > 0) {
             message.innerText =
                 "این نام کاربری قبلاً ثبت شده است.";
             return;
         }
 
-        // ساخت حساب جدید
         const response = await fetch(
             SUPABASE_URL + "/rest/v1/profiles",
             {
@@ -143,6 +157,7 @@ async function register() {
                 headers: {
                     "Content-Type": "application/json",
                     "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY,
                     "Prefer": "return=minimal"
                 },
                 body: JSON.stringify({
@@ -179,7 +194,8 @@ async function register() {
     } catch (error) {
 
         message.innerText =
-            "خطا در اتصال به Supabase.";
+            "خطا در اتصال به Supabase: " +
+            error.message;
 
     }
 }
@@ -214,21 +230,22 @@ async function login() {
             {
                 method: "GET",
                 headers: {
-                    "apikey": SUPABASE_KEY
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": "Bearer " + SUPABASE_KEY
                 }
             }
         );
 
+        const users =
+            await response.json();
+
         if (!response.ok) {
 
             message.innerText =
-                "خطا در اتصال به حساب.";
+                "خطا: " + JSON.stringify(users);
 
             return;
         }
-
-        const users =
-            await response.json();
 
         if (users.length === 0) {
 
@@ -253,7 +270,8 @@ async function login() {
     } catch (error) {
 
         message.innerText =
-            "خطا در اتصال به Supabase.";
+            "خطا در اتصال به Supabase: " +
+            error.message;
 
     }
 }
