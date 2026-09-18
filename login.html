@@ -22,7 +22,7 @@
             width: 90%;
             max-width: 380px;
             padding: 25px;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0,0,0,0.85);
             border-radius: 18px;
             text-align: center;
             color: white;
@@ -88,105 +88,174 @@
 </div>
 
 <script>
-const SUPABASE_URL = "https://ziigiepvuqjethzanjka.supabase.co";
-const SUPABASE_KEY = "sb_publishable_To2GG-pdTwB77nIfe5b20Q_ncT8eAOb";
+
+const SUPABASE_URL =
+"https://ziigiepvuqjethzanjka.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_To2GG-pdTwB77nIfe5b20Q_ncT8eAOb";
+
+
+function makeEmail(username) {
+    return username.toLowerCase().replace(/[^a-z0-9]/g, "")
+        + "@pixelverse.local";
+}
+
 
 async function register() {
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("message");
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("message");
 
     if (!username || !password) {
-        message.innerText = "نام کاربری و رمز عبور را وارد کنید.";
+        message.innerText =
+            "نام کاربری و رمز عبور را وارد کنید.";
         return;
     }
+
+    if (password.length < 6) {
+        message.innerText =
+            "رمز عبور باید حداقل ۶ کاراکتر باشد.";
+        return;
+    }
+
+    const email = makeEmail(username);
 
     try {
 
         const response = await fetch(
-            SUPABASE_URL + "/rest/v1/profiles",
+            SUPABASE_URL + "/auth/v1/signup",
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": "Bearer " + SUPABASE_KEY,
-                    "Prefer": "return=minimal"
+                    "apikey": SUPABASE_KEY
                 },
                 body: JSON.stringify({
-                    username: username,
+                    email: email,
                     password: password
                 })
             }
         );
 
-        if (response.ok) {
-            message.innerText = "ثبت‌نام با موفقیت انجام شد.";
-        } else {
-            const error = await response.text();
+        const data = await response.json();
 
-            if (error.includes("duplicate")) {
-                message.innerText = "این نام کاربری قبلاً ثبت شده است.";
-            } else {
-                message.innerText = "ثبت‌نام انجام نشد.";
-            }
+        if (!response.ok) {
+            message.innerText =
+                data.msg ||
+                data.error_description ||
+                "ثبت‌نام انجام نشد.";
+            return;
         }
 
+        message.innerText =
+            "ثبت‌نام با موفقیت انجام شد.";
+
+        await saveProfile(username, data.user);
+
     } catch (error) {
-        message.innerText = "خطا در اتصال به سرور.";
+
+        message.innerText =
+            "خطا در اتصال به Supabase.";
+
     }
 }
 
+
+async function saveProfile(username, user) {
+
+    if (!user) return;
+
+    await fetch(
+        SUPABASE_URL + "/rest/v1/profiles",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_KEY,
+                "Authorization": "Bearer " + SUPABASE_KEY
+            },
+            body: JSON.stringify({
+                id: user.id,
+                username: username
+            })
+        }
+    );
+}
+
+
 async function login() {
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const message = document.getElementById("message");
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("message");
 
     if (!username || !password) {
-        message.innerText = "نام کاربری و رمز عبور را وارد کنید.";
+        message.innerText =
+            "نام کاربری و رمز عبور را وارد کنید.";
         return;
     }
+
+    const email = makeEmail(username);
 
     try {
 
         const response = await fetch(
-            SUPABASE_URL +
-            "/rest/v1/profiles?username=eq." +
-            encodeURIComponent(username) +
-            "&password=eq." +
-            encodeURIComponent(password) +
-            "&select=*",
+            SUPABASE_URL + "/auth/v1/token?grant_type=password",
             {
-                method: "GET",
+                method: "POST",
                 headers: {
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": "Bearer " + SUPABASE_KEY
-                }
+                    "Content-Type": "application/json",
+                    "apikey": SUPABASE_KEY
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
             }
         );
 
         const data = await response.json();
 
-        if (data.length > 0) {
-
-            localStorage.setItem("username", username);
-
-            window.location.href = "chat.html";
-
-        } else {
-
-            message.innerText = "نام کاربری یا رمز عبور اشتباه است.";
-
+        if (!response.ok) {
+            message.innerText =
+                data.msg ||
+                data.error_description ||
+                "نام کاربری یا رمز عبور اشتباه است.";
+            return;
         }
+
+        localStorage.setItem(
+            "access_token",
+            data.access_token
+        );
+
+        localStorage.setItem(
+            "username",
+            username
+        );
+
+        window.location.href = "chat.html";
 
     } catch (error) {
 
-        message.innerText = "خطا در اتصال به سرور.";
+        message.innerText =
+            "خطا در اتصال به Supabase.";
 
     }
 }
+
 </script>
 
 </body>
